@@ -10,6 +10,9 @@
     "lint": "eslint --ext ts,tsx,d.ts ./src"
   },
   "dependencies": {
+    "@emotion/css": "^11.10.6",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
     "lint": "^0.8.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
