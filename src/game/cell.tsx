@@ -1,6 +1,8 @@
 import styled from "@emotion/styled";
 import React from "react";
+import { useSelector } from "react-redux";
 import sprite from "../assets/sprite.png";
+import { RootState } from "../redux/store";
 
 enum CellStates {
   Normal = "normal",
@@ -17,17 +19,22 @@ const CellSection = styled.div<{state: CellStates}>`
   width: 28px;
   box-sizing: border-box;
   background-image: url(${sprite});
-  ${({state}) => `background-position: ${Sprites[state].x + "px " + Sprites[state].y + "px"}`}
+  ${({state}) => `background-position: ${Sprites[state].x + "px " + Sprites[state].y + "px"}`};
 `;
 
-export function Cell() {
+function Cell() {
+  const { isMouseDown } = useSelector((state: RootState) => state.player);
   const [cellState, setCellState] = React.useState(CellStates.Normal);
 
   return (
     <CellSection
       state={cellState} 
-      onMouseDownCapture={() => setCellState(CellStates.MouseDown)}
+      onMouseEnter={() => isMouseDown && setCellState(CellStates.MouseDown)}
+      onMouseLeave={() => setCellState(CellStates.Normal)}
+      onMouseDown={() => setCellState(CellStates.Normal)}
     >
     </CellSection>
   );
 }
+
+export default React.memo(Cell);
