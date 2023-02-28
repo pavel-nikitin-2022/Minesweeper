@@ -6,6 +6,8 @@ import { MouseController } from "./controllers/MouseController";
 function App() {
 
   React.useEffect(() => {
+    // todo переправить на div #root
+    // todo убрать слушатели
     const body = document.getElementsByTagName("body");
     if (body[0]) {
       body[0].addEventListener("mousedown", (e) => {

@@ -1,12 +1,13 @@
 import styled from "@emotion/styled";
 import React from "react";
+import { useDispatch } from "react-redux";
 import sprite from "../assets/sprite.png";
 import { MouseController } from "../controllers/MouseController";
-import { CellType } from "./Game";
+import { CellType, openCell, selectNeighbors } from "../redux/game.reducer";
 
 enum CellStates {
-  Normal = "normal",
-  MouseDown = "mouseDown",
+  Close = "close",
+  Selected = "selected",
   Bomb = "bomb",
   One = 1,
   Two = 2,
@@ -19,51 +20,79 @@ enum CellStates {
 }
 
 const SpritesPos = {
-  normal: {x: 0, y: -92},
-  mouseDown: {x: -31, y: -92},
-  bomb: {x: -153, y: -92},
-  1: {x: -0.5, y: -123},
-  2: {x: -31, y: -123},
-  3: {x: -61, y: -123},
-  4: {x: -92, y: -123},
-  5: {x: -122.5, y: -123},
-  6: {x: -153, y: -123},
-  7: {x: -183.5, y: -123},
-  8: {x: -214, y: -123},
+  close: { x: 0, y: -92 },
+  selected: { x: -31, y: -92 },
+  bomb: { x: -153, y: -92 },
+  1: { x: -0.5, y: -123 },
+  2: { x: -31, y: -123 },
+  3: { x: -61, y: -123 },
+  4: { x: -92, y: -123 },
+  5: { x: -122.5, y: -123 },
+  6: { x: -153, y: -123 },
+  7: { x: -183.5, y: -123 },
+  8: { x: -214, y: -123 },
 };
 
-const CellSection = styled.div<{state: CellStates}>`
+const CellSection = styled.div<{ state: CellStates }>`
   height: 28px;
   width: 28px;
   box-sizing: border-box;
+  image-rendering: pixelated;
   background-image: url(${sprite});
-  ${({state}) => 
+  ${({ state }) =>
     `background-position: ${SpritesPos[state].x + "px " + SpritesPos[state].y + "px"}`
 }`;
 
-function Cell({isBomb, nearBombs}: CellType) {
-  const [cellState, setCellState] = React.useState(CellStates.Normal);
-  const $isPressed = React.useRef(false);
+function Cell({ isBomb, nearBombs, open, selected, index }: CellType) {
+  const [cellState, setCellState] = React.useState(CellStates.Close);
+  const $isMouseOnCell = React.useRef(false);
+
+  const dispatch = useDispatch();
+
+  const onOpenCell = React.useCallback(() => {
+    dispatch(openCell(index));
+    if (isBomb) setCellState(CellStates.Bomb);
+    else if (nearBombs) setCellState(nearBombs);
+    else setCellState(CellStates.Selected);
+  }, []);
+
+  React.useLayoutEffect(() => {
+    if (open) return;
+    if (selected)
+      setCellState(CellStates.Selected);
+    else if (!($isMouseOnCell.current && MouseController.isDown()))
+      setCellState(CellStates.Close);
+  }, [selected]);
 
   return (
     <CellSection
-      state={cellState} 
-      onMouseEnter={() => !$isPressed.current && MouseController.isDown() && setCellState(CellStates.MouseDown)}
-      onMouseLeave={() => !$isPressed.current && setCellState(CellStates.Normal)}
-      onMouseDown={() => !$isPressed.current && setCellState(CellStates.MouseDown)}
+      state={cellState}
 
-      onClick={() => {
-        $isPressed.current = true;
-        if (isBomb) setCellState(CellStates.Bomb);
-        else if (nearBombs) setCellState(nearBombs);
-        else setCellState(CellStates.MouseDown);
+      onMouseEnter={() => {
+        $isMouseOnCell.current = true;
+
+        if (MouseController.isDown()) {
+          if (!open) setCellState(CellStates.Selected);
+          else dispatch(selectNeighbors({index, status: true}));
+        }
       }}
 
+      onMouseLeave={() => {
+        $isMouseOnCell.current = false;
+
+        if (!open) setCellState(CellStates.Close);
+        else dispatch(selectNeighbors({index, status: false}));
+      }}
+
+      onMouseDown={() => {
+        if (open) {
+          dispatch(selectNeighbors({index, status: true}));
+        } else setCellState(CellStates.Selected);
+      }}
+      onClick={onOpenCell}
       onMouseUp={() => {
-        $isPressed.current = true;
-        if (isBomb) setCellState(CellStates.Bomb);
-        else if (nearBombs) setCellState(nearBombs);
-        else setCellState(CellStates.MouseDown);
+        if (open) dispatch(selectNeighbors({index, status: false}));
+        else onOpenCell();
       }}
     >
     </CellSection>

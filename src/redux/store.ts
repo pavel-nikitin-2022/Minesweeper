@@ -1,6 +1,9 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import gameReducer from "./game.reducer";
 
-const rootReducer = combineReducers({});
+const rootReducer = combineReducers({
+  cells: gameReducer,
+});
 
 export const store = configureStore({
   reducer: rootReducer
