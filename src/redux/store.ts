@@ -1,9 +1,6 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import playerReducer from "./playerReducer";
 
-const rootReducer = combineReducers({
-  player: playerReducer,
-});
+const rootReducer = combineReducers({});
 
 export const store = configureStore({
   reducer: rootReducer

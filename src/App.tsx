@@ -1,23 +1,21 @@
 import React from "react";
-import { useDispatch } from "react-redux/es/exports";
 import "./App.css";
 import Game from "./game";
-import { setMouseDown } from "./redux/playerReducer";
+import { MouseController } from "./controllers/MouseController";
 
 function App() {
-  const dispatch = useDispatch();
 
   React.useEffect(() => {
     const body = document.getElementsByTagName("body");
     if (body[0]) {
       body[0].addEventListener("mousedown", (e) => {
         e.preventDefault();
-        dispatch(setMouseDown(true));
+        MouseController.mouseDown();
       });
 
       body[0].addEventListener("mouseup", (e) => {
         e.preventDefault();
-        dispatch(setMouseDown(false));
+        MouseController.mouseUp();
       });
     }
   }, []);
