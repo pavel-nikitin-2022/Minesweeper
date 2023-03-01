@@ -1,31 +1,43 @@
 import React from "react";
-import "./App.css";
 import Game from "./game";
 import { MouseController } from "./controllers/MouseController";
+import styled from "@emotion/styled";
+
+function onMouseDown(e: MouseEvent) {
+  e.preventDefault();
+  MouseController.mouseDown();
+}
+
+function onMouseUp(e: MouseEvent) {
+  e.preventDefault();
+  MouseController.mouseUp();
+}
+
+const Wrapper = styled.div`
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+`;
 
 function App() {
-
   React.useEffect(() => {
-    // todo переправить на div #root
-    // todo убрать слушатели
-    const body = document.getElementsByTagName("body");
-    if (body[0]) {
-      body[0].addEventListener("mousedown", (e) => {
-        e.preventDefault();
-        MouseController.mouseDown();
-      });
-
-      body[0].addEventListener("mouseup", (e) => {
-        e.preventDefault();
-        MouseController.mouseUp();
-      });
+    const root = document.getElementById("root");
+    if (root) {
+      root.addEventListener("mousedown", onMouseDown);
+      root.addEventListener("mouseup", onMouseUp);
     }
+
+    return () => {
+      root?.removeEventListener("mousedown", onMouseDown);
+      root?.removeEventListener("mouseup", onMouseUp);
+    };
   }, []);
   
   return (
-    <div>
+    <Wrapper>
       <Game></Game>
-    </div>
+    </Wrapper>
   );
 }
 
