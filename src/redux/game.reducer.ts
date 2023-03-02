@@ -66,14 +66,16 @@ const GameSlice = createSlice({
     openCell(state: GameState, action: PayloadAction<number>) {
       const i = action.payload;
       if (i < 0 || i > 255 || state.cells[i].open) return;
-      state.cells[i].open = true;
-      if (state.cells[i].isBomb)
+      if (state.cells[i].isBomb) {
+        state.cells[i].open = true;
         state.cells[i].state = CellStates.Bomb;
+      }
       else if (state.cells[i].nearBombs) {
+        state.cells[i].open = true;
         const newState = toCellState(state.cells[i].nearBombs);
         if (newState) state.cells[i].state = newState;
       }
-      else state.cells[i].state = CellStates.Selected;
+      else openEmpty(i, state.cells);
     },
 
     // подсветить по нажатию
@@ -86,24 +88,22 @@ const GameSlice = createSlice({
   }
 });
 
-// function openEmpty(index: number, array: CellType[]) {
-//   if (index < 0 || index > 255 || array[index].open) return;
-//   if (array[index].nearBombs) {
-//     array[index].open = true;
-//     return;
-//   }
+function openEmpty(index: number, array: ICell[]) {
+  if (index < 0 || index > 255 || array[index].open) return;
+  array[index].open = true;
+  console.log(index);
+  if (array[index].nearBombs) {
+    const newState = toCellState(array[index].nearBombs);
+    if (newState)
+      array[index].state = newState;
+    return;
+  }
 
-//   openEmpty(index - 17, array);
-//   openEmpty(index - 16, array);
-//   openEmpty(index - 15, array);
-
-//   openEmpty(index + 17, array);
-//   openEmpty(index + 16, array);
-//   openEmpty(index + 15, array);
-
-//   openEmpty(index - 1, array);
-// }
-// todo конец генерации
+  array[index].state = CellStates.Selected;
+  findNeighbors(index, array)?.forEach((i) => {
+    openEmpty(i, array);
+  });
+}
 
 export default GameSlice.reducer;
 export const { openCell, selectNeighbors, setSelected } = GameSlice.actions;
