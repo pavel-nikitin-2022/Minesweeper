@@ -2,15 +2,18 @@ import React from "react";
 import Game from "./game";
 import { MouseController } from "./controllers/MouseController";
 import styled from "@emotion/styled";
+import { isRightClick } from "./utils/isRightClick";
 
 function onMouseDown(e: MouseEvent) {
   e.preventDefault();
-  MouseController.mouseDown();
+  if (!isRightClick(e))
+    MouseController.mouseDown();
 }
 
 function onMouseUp(e: MouseEvent) {
   e.preventDefault();
-  MouseController.mouseUp();
+  if (!isRightClick(e))
+    MouseController.mouseUp();
 }
 
 const Wrapper = styled.div`

@@ -1,3 +1,6 @@
+/**
+ * Класс отслеживающий зажата ли мышь у пользователя
+ */
 class MouseControl {
   private isMouseDown = false;
   

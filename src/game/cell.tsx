@@ -3,12 +3,15 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import sprite from "../assets/sprite.png";
 import { MouseController } from "../controllers/MouseController";
-import { CellStates, ICell, openCell, selectNeighbors, setSelected } from "../redux/game.reducer";
+import { CellStates, CellStatuses, ICell, openCell, putFlag, selectNeighbors, setSelected } from "../redux/game.reducer";
+import { isRightClick } from "../utils/isRightClick";
 
 const SpritesPos = {
   close: { x: 0, y: -92 },
   selected: { x: -31, y: -92 },
   bomb: { x: -153, y: -92 },
+  flag: { x: -61.2, y: -92 },
+  question: { x: -92, y: -92 },
   1: { x: -0.5, y: -123 },
   2: { x: -31, y: -123 },
   3: { x: -61, y: -123 },
@@ -30,39 +33,58 @@ const CellSection = styled.div<{ state: CellStates }>`
 }`;
 
 
-function Cell({ open, state, index }: ICell) {
-  const $isMouseOnCell = React.useRef(false);
+function Cell({ status, state, index }: ICell) {
   const dispatch = useDispatch();
+  const $touchStartTime = React.useRef<null | number>(null);
+  const $touchController = React.useRef<number>(0);
 
   return (
     <CellSection
       state={state}
-      onClick={() => dispatch(openCell(index))}
+      onClick={() => {
+        if (status !== CellStatuses.Guess)
+          dispatch(openCell(index));
+      }}
 
       onMouseEnter={() => {
-        $isMouseOnCell.current = true;
         if (MouseController.isDown()) {
-          if (!open) dispatch(setSelected({index, status: true}));
-          else dispatch(selectNeighbors({index, status: true}));
+          if (status === CellStatuses.Close) dispatch(setSelected({ index, status: true }));
+          else if (status === CellStatuses.Open) dispatch(selectNeighbors({ index, status: true }));
         }
       }}
 
       onMouseLeave={() => {
-        $isMouseOnCell.current = false;
-        if (!open) dispatch(setSelected({index, status: false}));
-        else dispatch(selectNeighbors({index, status: false}));
+        if (MouseController.isDown()) {
+          if (status === CellStatuses.Close) dispatch(setSelected({ index, status: false }));
+          else dispatch(selectNeighbors({ index, status: false }));
+        }
       }}
 
-      onMouseDown={() => {
-        if (open) {
-          dispatch(selectNeighbors({index, status: true}));
-        } else dispatch(setSelected({index, status: true}));
+      onMouseDown={(e) => {
+        if (isRightClick(e))
+          dispatch(putFlag(index));
+        else if (status === CellStatuses.Open) {
+          dispatch(selectNeighbors({ index, status: true }));
+        } else if (status === CellStatuses.Close)
+          dispatch(setSelected({ index, status: true }));
       }}
 
-      onMouseUp={() => {
-        if (open) dispatch(selectNeighbors({index, status: false}));
-        else dispatch(openCell(index));
+      onMouseUp={(e) => {
+        if (isRightClick(e)) return;
+        if (status !== CellStatuses.Guess) {
+          if (status === CellStatuses.Open) dispatch(selectNeighbors({ index, status: false }));
+          else dispatch(openCell(index));
+        }
       }}
+
+      onTouchStart={() => {
+        $touchStartTime.current = Number(new Date());
+        $touchController.current = setTimeout(() => {
+          dispatch(putFlag(index));
+        }, 600);
+      }}
+
+      onTouchEnd={() => clearTimeout($touchController.current)}
     >
     </CellSection>
   );

@@ -1,6 +1,10 @@
-import { CellStates } from "../redux/game.reducer";
+import { CellStates, CellStatuses } from "../redux/game.reducer";
 import { findNeighbors } from "./findNeighbors";
 
+/**
+ * Функция генерации матрицы(игрового поля)
+ * @returns массив содержащий значение каждой клетки
+ */
 export function generateCells() {
   const bombsIndex = [...Array(256).keys()]
     .sort(() => Math.random() - 0.5)
@@ -10,7 +14,7 @@ export function generateCells() {
     return {
       isBomb: false,
       nearBombs: 0,
-      open: false,
+      status: CellStatuses.Close,
       index: i,
       state: CellStates.Close
     };

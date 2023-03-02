@@ -15,7 +15,7 @@ function Game() {
   const { cells }= useSelector((root: RootState) => root.cells);
 
   return (
-    <GameBoard>
+    <GameBoard onContextMenuCapture={(e) => e.preventDefault()}>
       {cells.map((cell, i) =>
         <Cell {...cell} index={i} key={i} />
       )}
