@@ -1,21 +1,26 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
-    "skipLibCheck": true,
-    "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "resolveJsonModule": true,
     "isolatedModules": true,
+    "jsx": "preserve",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "module": "esnext",
+    "moduleResolution": "Node",
+    "removeComments": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "resolveJsonModule": true,
+    "rootDir": "./src",
+    "baseUrl": ".",
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2016",
+    "types": ["vite/client"],
+    "jsxImportSource": "@emotion/react"
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "exclude": ["node_modules", "dist"],
+  "include": ["src", "../vite.config.ts"]
 }
+

@@ -1,15 +1,16 @@
-import { ICell } from "../redux/game.reducer";
+import { Cell as ICell } from "../types";
+
 
 /**
  * Функция для поиска соседей клетки по ее индексу
- * @param {number} index - порядковый номер клетки в матрице
- * @param {ICell[]} array - матрица
+ * @param index - порядковый номер клетки в матрице
+ * @param array - матрица
  * @returns массив индексов соседей клетки
  */
 export function findNeighbors(index: number, array: ICell[]) {
   const neighbors: number[] = [];
 
-  if (index < 0 || index > 255) return;
+  if (index < 0 || index > 255) return [];
 
   // все клетки
   if (index - 16 >= 0) neighbors.push(index - 16);

@@ -1,4 +1,4 @@
-import { CellStates, CellStatuses } from "../redux/game.reducer";
+import { CellSprite, CellStatus } from "../types";
 import { findNeighbors } from "./findNeighbors";
 
 /**
@@ -14,9 +14,9 @@ export function generateCells() {
     return {
       isBomb: false,
       nearBombs: 0,
-      status: CellStatuses.Close,
+      status: CellStatus.Close,
       index: i,
-      state: CellStates.Close
+      sprite: CellSprite.Close
     };
   });
 

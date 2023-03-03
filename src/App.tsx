@@ -4,18 +4,6 @@ import { MouseController } from "./controllers/MouseController";
 import styled from "@emotion/styled";
 import { isRightClick } from "./utils/isRightClick";
 
-function onMouseDown(e: MouseEvent) {
-  e.preventDefault();
-  if (!isRightClick(e))
-    MouseController.mouseDown();
-}
-
-function onMouseUp(e: MouseEvent) {
-  e.preventDefault();
-  if (!isRightClick(e))
-    MouseController.mouseUp();
-}
-
 const Wrapper = styled.div`
   max-width: 1280px;
   margin: 0 auto;
@@ -24,22 +12,31 @@ const Wrapper = styled.div`
 `;
 
 function App() {
+  const onMouseDown = (e: MouseEvent) => {
+    e.preventDefault();
+    !isRightClick(e) && MouseController.mouseDown();
+  };
+
+  const onMouseUp = (e: MouseEvent) => {
+    e.preventDefault();
+    !isRightClick(e) && MouseController.mouseUp();
+  };
+
   React.useEffect(() => {
     const root = document.getElementById("root");
-    if (root) {
-      root.addEventListener("mousedown", onMouseDown);
-      root.addEventListener("mouseup", onMouseUp);
-    }
+
+    root?.addEventListener("mousedown", onMouseDown);
+    root?.addEventListener("mouseup", onMouseUp);
 
     return () => {
       root?.removeEventListener("mousedown", onMouseDown);
       root?.removeEventListener("mouseup", onMouseUp);
     };
   }, []);
-  
+
   return (
     <Wrapper>
-      <Game></Game>
+      <Game />
     </Wrapper>
   );
 }

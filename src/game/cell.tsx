@@ -1,93 +1,93 @@
 import styled from "@emotion/styled";
 import React from "react";
-import { useDispatch } from "react-redux";
 import sprite from "../assets/sprite.png";
 import { MouseController } from "../controllers/MouseController";
-import { CellStates, CellStatuses, ICell, openCell, putFlag, selectNeighbors, setSelected } from "../redux/game.reducer";
+import {
+  openCell,
+  putFlag,
+  highlightNeighbors,
+  setSelected
+} from "../store/game.reducer";
+import { useAppDispatch } from "../store";
 import { isRightClick } from "../utils/isRightClick";
+import { SpritesPos } from "./config";
+import { CellSprite, CellStatus, Cell as ICell } from "../types";
 
-const SpritesPos = {
-  close: { x: 0, y: -92 },
-  selected: { x: -31, y: -92 },
-  bomb: { x: -153, y: -92 },
-  flag: { x: -61.2, y: -92 },
-  question: { x: -92, y: -92 },
-  1: { x: -0.5, y: -123 },
-  2: { x: -31, y: -123 },
-  3: { x: -61, y: -123 },
-  4: { x: -92, y: -123 },
-  5: { x: -122.5, y: -123 },
-  6: { x: -153, y: -123 },
-  7: { x: -183.5, y: -123 },
-  8: { x: -214, y: -123 },
-};
+const TOUCH_INTERVAL = 600;
 
-const CellSection = styled.div<{ state: CellStates }>`
-  height: 28px;
-  width: 28px;
+const CellSection = styled.div<{ state: CellSprite }>`
+  height: 16px;
+  width: 16px;
   box-sizing: border-box;
   image-rendering: pixelated;
   background-image: url(${sprite});
   ${({ state }) =>
-    `background-position: ${SpritesPos[state].x + "px " + SpritesPos[state].y + "px"};`
-}`;
+    `background-position: ${SpritesPos[state].x}px ${SpritesPos[state].y}px`}
+`;
 
+const Cell: React.FC<ICell> = ({ status, sprite, index }) => {
+  const dispatch = useAppDispatch();
+  const touchStartRef = React.useRef<null | number>(null);
+  const setCellSpriteTimeoutRef = React.useRef<number>(0);
 
-function Cell({ status, state, index }: ICell) {
-  const dispatch = useDispatch();
-  const $touchStartTime = React.useRef<null | number>(null);
-  const $touchController = React.useRef<number>(0);
+  // обработчики событий клетки
+  const handleClick = React.useCallback(() => {
+    if (status !== CellStatus.Guess) dispatch(openCell(index));
+  }, []);
+
+  const handleMouseDown = React.useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (isRightClick(e)) dispatch(putFlag(index));
+    else if (status === CellStatus.Open) {
+      dispatch(highlightNeighbors({ index, status: true }));
+    } else if (status === CellStatus.Close)
+      dispatch(setSelected({ index, status: true }));
+  }, []);
+
+  const handleMouseUp = React.useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (isRightClick(e)) return;
+    if (status !== CellStatus.Guess) {
+      if (status === CellStatus.Open)
+        dispatch(highlightNeighbors({ index, status: false }));
+      else dispatch(openCell(index));
+    }
+  }, []);
+
+  const handleMouseLeave = React.useCallback(() => {
+    if (MouseController.isDown()) {
+      if (status === CellStatus.Close)
+        dispatch(setSelected({ index, status: false }));
+      else dispatch(highlightNeighbors({ index, status: false }));
+    }
+  }, []);
+
+  const handleMouseEnter = React.useCallback(() => {
+    if (MouseController.isDown()) {
+      if (status === CellStatus.Close)
+        dispatch(setSelected({ index, status: true }));
+      else if (status === CellStatus.Open)
+        dispatch(highlightNeighbors({ index, status: true }));
+    }
+  }, []);
+
+  const handleTouchStart = React.useCallback(() => {
+    touchStartRef.current = Date.now();
+    setCellSpriteTimeoutRef.current = setTimeout(() => {
+      dispatch(putFlag(index));
+    }, TOUCH_INTERVAL);
+  }, []);
 
   return (
     <CellSection
-      state={state}
-      onClick={() => {
-        if (status !== CellStatuses.Guess)
-          dispatch(openCell(index));
-      }}
-
-      onMouseEnter={() => {
-        if (MouseController.isDown()) {
-          if (status === CellStatuses.Close) dispatch(setSelected({ index, status: true }));
-          else if (status === CellStatuses.Open) dispatch(selectNeighbors({ index, status: true }));
-        }
-      }}
-
-      onMouseLeave={() => {
-        if (MouseController.isDown()) {
-          if (status === CellStatuses.Close) dispatch(setSelected({ index, status: false }));
-          else dispatch(selectNeighbors({ index, status: false }));
-        }
-      }}
-
-      onMouseDown={(e) => {
-        if (isRightClick(e))
-          dispatch(putFlag(index));
-        else if (status === CellStatuses.Open) {
-          dispatch(selectNeighbors({ index, status: true }));
-        } else if (status === CellStatuses.Close)
-          dispatch(setSelected({ index, status: true }));
-      }}
-
-      onMouseUp={(e) => {
-        if (isRightClick(e)) return;
-        if (status !== CellStatuses.Guess) {
-          if (status === CellStatuses.Open) dispatch(selectNeighbors({ index, status: false }));
-          else dispatch(openCell(index));
-        }
-      }}
-
-      onTouchStart={() => {
-        $touchStartTime.current = Number(new Date());
-        $touchController.current = setTimeout(() => {
-          dispatch(putFlag(index));
-        }, 600);
-      }}
-
-      onTouchEnd={() => clearTimeout($touchController.current)}
-    >
-    </CellSection>
+      state={sprite}
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={() => clearTimeout(setCellSpriteTimeoutRef.current)}
+    />
   );
-}
+};
 
 export default React.memo(Cell);
