@@ -53,7 +53,6 @@ const GameSlice = createSlice({
       action: PayloadAction<{ index: number; status: boolean }>
     ) {
       const { index, status } = action.payload;
-
       // проверяем пришел ли адекватный индекс и открыт ли он
       if (
         index < 0 ||

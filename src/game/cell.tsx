@@ -33,7 +33,7 @@ const Cell: React.FC<ICell> = ({ status, sprite, index }) => {
   // обработчики событий клетки
   const handleClick = React.useCallback(() => {
     if (status !== CellStatus.Guess) dispatch(openCell(index));
-  }, []);
+  }, [status]);
 
   const handleMouseDown = React.useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (isRightClick(e)) dispatch(putFlag(index));
@@ -41,7 +41,7 @@ const Cell: React.FC<ICell> = ({ status, sprite, index }) => {
       dispatch(highlightNeighbors({ index, status: true }));
     } else if (status === CellStatus.Close)
       dispatch(setSelected({ index, status: true }));
-  }, []);
+  }, [status]);
 
   const handleMouseUp = React.useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (isRightClick(e)) return;
@@ -50,7 +50,7 @@ const Cell: React.FC<ICell> = ({ status, sprite, index }) => {
         dispatch(highlightNeighbors({ index, status: false }));
       else dispatch(openCell(index));
     }
-  }, []);
+  }, [status]);
 
   const handleMouseLeave = React.useCallback(() => {
     if (MouseController.isDown()) {
@@ -58,16 +58,17 @@ const Cell: React.FC<ICell> = ({ status, sprite, index }) => {
         dispatch(setSelected({ index, status: false }));
       else dispatch(highlightNeighbors({ index, status: false }));
     }
-  }, []);
+  }, [status]);
 
   const handleMouseEnter = React.useCallback(() => {
     if (MouseController.isDown()) {
       if (status === CellStatus.Close)
         dispatch(setSelected({ index, status: true }));
-      else if (status === CellStatus.Open)
+      else if (status === CellStatus.Open) {
         dispatch(highlightNeighbors({ index, status: true }));
+      }
     }
-  }, []);
+  }, [status]);
 
   const handleTouchStart = React.useCallback(() => {
     touchStartRef.current = Date.now();
