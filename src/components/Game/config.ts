@@ -1,4 +1,4 @@
-import { CellSprite } from "../types";
+import { CellSprite } from "../../types";
 
 export const SpritesPos: Record<CellSprite, { x: number; y: number }> = {
   close: { x: 0, y: -51 },

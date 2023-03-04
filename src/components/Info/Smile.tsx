@@ -1,17 +1,17 @@
 import styled from "@emotion/styled";
 import React from "react";
-import { useAppDispatch } from "../store";
-import sprite from "../assets/sprite.png";
-import { recreateGame } from "../store/game.reducer";
+import { useAppDispatch } from "src/store";
+import sprite from "src/assets/sprite.png";
+import { GameStatus, recreateGame } from "src/store/game.reducer";
 
 enum SmileOption {
-  Default = "default" ,
-  DefaultPress = "defaultPress" ,
-  Suprised = "suprised" ,
-  PockerFace = "pockerFace" ,
-  SadFace = "sadFace" ,
+  Default = "default",
+  DefaultPress = "defaultPress",
+  Suprised = "suprised",
+  PockerFace = "pockerFace",
+  SadFace = "sadFace",
 }
-  
+
 const SpritesPos = {
   default: { x: 0, y: -24 },
   defaultPress: { x: -27, y: -24 },
@@ -30,13 +30,21 @@ const SmileBlock = styled.div<{ smile: SmileOption }>`
     `background-position: ${SpritesPos[smile].x}px ${SpritesPos[smile].y}px`}
 `;
 
-const Smile: React.FC = () => {
+const Smile: React.FC<{gameStatus: GameStatus}> = ({gameStatus}) => {
   const [state, setState] = React.useState<SmileOption>(SmileOption.Default);
   const dispatch = useAppDispatch();
 
+  React.useEffect(() => {
+    if (gameStatus === GameStatus.Defeat) {
+      setState(SmileOption.SadFace);
+    }
+    if (gameStatus === GameStatus.Win)
+      setState(SmileOption.PockerFace);
+  }, [gameStatus]);
+
   return (
     <SmileBlock
-      smile={state} 
+      smile={state}
       onMouseDown={() => setState(SmileOption.DefaultPress)}
       onMouseUp={() => setState(SmileOption.Default)}
       onClick={() => dispatch(recreateGame())}

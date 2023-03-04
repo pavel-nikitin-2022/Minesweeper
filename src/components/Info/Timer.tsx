@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import React from "react";
-import sprite from "../assets/sprite.png";
+import sprite from "src/assets/sprite.png";
 
 enum TimerNumber {
   One = 1,

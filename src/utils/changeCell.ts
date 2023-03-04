@@ -8,7 +8,6 @@ import { findNeighbors } from "./findNeighbors";
  */
 export function changeCell(index: number, array: ICell[]) {
   if (index < 0 || index > 255 || !array[index].isBomb) return;
-  console.log("AAAA");
   const cell = array[index];
   cell.isBomb = false;
 

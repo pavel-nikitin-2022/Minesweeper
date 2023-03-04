@@ -1,17 +1,18 @@
 import styled from "@emotion/styled";
 import React from "react";
-import sprite from "../assets/sprite.png";
-import { MouseController } from "../controllers/MouseController";
+import sprite from "src/assets/sprite.png";
+import { MouseController } from "src/controllers/MouseController";
 import {
   openCell,
   putFlag,
   highlightNeighbors,
-  setSelected
-} from "../store/game.reducer";
-import { useAppDispatch } from "../store";
-import { isRightClick } from "../utils/isRightClick";
+  setSelected,
+  openCellFlag
+} from "../../store/game.reducer";
+import { useAppDispatch } from "../../store";
+import { isRightClick } from "../../utils/isRightClick";
 import { SpritesPos } from "./config";
-import { CellSprite, CellStatus, Cell as ICell } from "../types";
+import { CellSprite, CellStatus, Cell as ICell } from "../../types";
 
 const TOUCH_INTERVAL = 600;
 
@@ -21,6 +22,7 @@ const CellSection = styled.div<{ state: CellSprite }>`
   box-sizing: border-box;
   image-rendering: pixelated;
   background-image: url(${sprite});
+  cursor: pointer;
   ${({ state }) =>
     `background-position: ${SpritesPos[state].x}px ${SpritesPos[state].y}px`}
 `;
@@ -31,9 +33,6 @@ const Cell: React.FC<ICell> = ({ status, sprite, index }) => {
   const setCellSpriteTimeoutRef = React.useRef<number>(0);
 
   // обработчики событий клетки
-  const handleClick = React.useCallback(() => {
-    if (status !== CellStatus.Guess) dispatch(openCell(index));
-  }, [status]);
 
   const handleMouseDown = React.useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (isRightClick(e)) dispatch(putFlag(index));
@@ -46,8 +45,10 @@ const Cell: React.FC<ICell> = ({ status, sprite, index }) => {
   const handleMouseUp = React.useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (isRightClick(e)) return;
     if (status !== CellStatus.Guess) {
-      if (status === CellStatus.Open)
+      if (status === CellStatus.Open) {
         dispatch(highlightNeighbors({ index, status: false }));
+        dispatch(openCellFlag(index));
+      }
       else dispatch(openCell(index));
     }
   }, [status]);
@@ -80,7 +81,6 @@ const Cell: React.FC<ICell> = ({ status, sprite, index }) => {
   return (
     <CellSection
       state={sprite}
-      onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onMouseDown={handleMouseDown}

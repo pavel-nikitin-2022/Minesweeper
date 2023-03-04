@@ -14,6 +14,9 @@ export function endGame(array: ICell[]) {
         cell.sprite = CellSprite.Bomb;
         cell.status = CellStatus.Open;
       }
+      if (cell.sprite === CellSprite.QuestionMark) {
+        cell.sprite = CellSprite.Flag;
+      }
     } else {
       if (cell.sprite === CellSprite.Flag) {
         cell.status = CellStatus.Open;

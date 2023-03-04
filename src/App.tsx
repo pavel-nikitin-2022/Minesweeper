@@ -1,9 +1,9 @@
 import React from "react";
-import Game from "./game";
+import Game from "./components/Game";
 import { MouseController } from "./controllers/MouseController";
 import styled from "@emotion/styled";
 import { isRightClick } from "./utils/isRightClick";
-import Info from "./info/Info";
+import Info from "./components/Info";
 
 const Wrapper = styled.div`
   max-width: 1280px;
@@ -38,10 +38,8 @@ function App() {
 
   return (
     <Wrapper>
-      <>
-        <Info />
-        <Game />
-      </>
+      <Info />
+      <Game />
     </Wrapper>
   );
 }

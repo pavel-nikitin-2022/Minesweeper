@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import React from "react";
-import { useAppSelector } from "../store";
+import { GameStatus } from "src/store/game.reducer";
+import { useAppSelector } from "src/store";
 import Smile from "./Smile";
 import Timer from "./Timer";
 
@@ -14,7 +15,7 @@ const InfoSection = styled.div`
 
 const Info: React.FC = () => {
   const [timerValue, setTimerValue] = React.useState(0);
-  const { isStart, bomb } = useAppSelector(state => state.cells);
+  const { isStart, bomb, gameStatus } = useAppSelector(state => state.cells);
   const startTime = React.useRef(Date.now());
   const intervalId = React.useRef<number>();
 
@@ -32,10 +33,15 @@ const Info: React.FC = () => {
     }
   }, [isStart]);
 
+  React.useEffect(() => {
+    if (gameStatus !== GameStatus.Unknown)
+      clearInterval(intervalId.current);
+  }, [gameStatus]);
+
   return (
     <InfoSection>
       <Timer number={bomb}/>
-      <Smile />
+      <Smile gameStatus={gameStatus} />
       <Timer number={timerValue} />
     </InfoSection>
   );
