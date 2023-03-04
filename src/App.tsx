@@ -3,6 +3,7 @@ import Game from "./game";
 import { MouseController } from "./controllers/MouseController";
 import styled from "@emotion/styled";
 import { isRightClick } from "./utils/isRightClick";
+import Info from "./info/Info";
 
 const Wrapper = styled.div`
   max-width: 1280px;
@@ -12,6 +13,7 @@ const Wrapper = styled.div`
 `;
 
 function App() {
+
   const onMouseDown = (e: MouseEvent) => {
     e.preventDefault();
     !isRightClick(e) && MouseController.mouseDown();
@@ -36,7 +38,10 @@ function App() {
 
   return (
     <Wrapper>
-      <Game />
+      <>
+        <Info />
+        <Game />
+      </>
     </Wrapper>
   );
 }

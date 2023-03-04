@@ -4,16 +4,19 @@ import { endGame } from "../utils/endGame";
 import { findNeighbors } from "../utils/findNeighbors";
 import { generateCells } from "../utils/generateBoard";
 import { changeCell } from "../utils/changeCell";
-import { Cell as ICell, CellSprite, CellStatus, } from "../types";
+import { Cell as ICell, CellSprite, CellStatus } from "../types";
 
 export type GameState = {
   cells: ICell[];
-  click: number;
+  isStart: boolean;
+  bomb: number;
 };
+
 
 const initialState: GameState = {
   cells: generateCells(),
-  click: 0
+  isStart: false,
+  bomb: 40,
 };
 
 /**
@@ -78,8 +81,8 @@ const GameSlice = createSlice({
       if (i < 0 || i > 255 || state.cells[i].status === CellStatus.Open) return;
 
       const cell = state.cells[i];
-      if (!state.click && cell.isBomb) changeCell(i, state.cells);
-      state.click++;
+      if (!state.isStart && cell.isBomb) changeCell(i, state.cells);
+      state.isStart = true;
 
       if (cell.isBomb) {
         cell.status = CellStatus.Open;
@@ -120,17 +123,32 @@ const GameSlice = createSlice({
       if (i < 0 || i > 255 || state.cells[i].status === CellStatus.Open) return;
       const cell = state.cells[i];
 
-      if (cell.sprite !== CellSprite.QuestionMark) cell.status = CellStatus.Guess;
+      if (cell.sprite !== CellSprite.QuestionMark)
+        cell.status = CellStatus.Guess;
       else cell.status = CellStatus.Close;
 
-      if (cell.sprite === CellSprite.Flag) cell.sprite = CellSprite.QuestionMark;
-      else if (cell.sprite === CellSprite.QuestionMark)
+      if (cell.sprite === CellSprite.Flag) {
+        cell.sprite = CellSprite.QuestionMark;
+        state.bomb++;
+      } else if (cell.sprite === CellSprite.QuestionMark)
         cell.sprite = CellSprite.Close;
-      else cell.sprite = CellSprite.Flag;
+      else {
+        if (state.bomb) {
+          cell.sprite = CellSprite.Flag;
+          state.bomb--;
+        }
+      }
+    },
+
+    /** Пересоздание игры */
+    recreateGame(state: GameState) {
+      state.cells = generateCells();
+      state.bomb = 40;
+      state.isStart = false;
     },
   },
 });
 
 export default GameSlice.reducer;
-export const { openCell, highlightNeighbors, setSelected, putFlag } =
+export const { openCell, highlightNeighbors, setSelected, putFlag, recreateGame } =
   GameSlice.actions;

@@ -8,7 +8,6 @@ const GameBoard = styled.div`
   background-color: #999;
   padding: 5px;
   grid-template-columns: repeat(16, 16px);
-  transform: scale(1.5);
 `;
 
 const Game: React.FC = () => {
