@@ -1,9 +1,9 @@
 /**
  * Класс, отслеживающий зажата ли мышь у пользователя
  */
-class MouseControl {
+class MouseController {
   private isMouseDown = false;
-  
+
   mouseDown() {
     this.isMouseDown = true;
   }
@@ -17,4 +17,4 @@ class MouseControl {
   }
 }
 
-export const MouseController = new MouseControl();
+export const mouseController = new MouseController();

@@ -1,6 +1,6 @@
 import { CellSprite } from "src/types";
 
-export const SpritesPos: Record<CellSprite, { x: number; y: number }> = {
+export const SPRITES_POS: Record<CellSprite, { x: number; y: number }> = {
   close: { x: 0, y: -51 },
   selected: { x: -17, y: -51 },
   bomb: { x: -85, y: -51 },

@@ -23,6 +23,7 @@ const initialState: GameState = {
   isStart: false,
   flagsAmount: 40,
   gameStatus: GameStatus.Unknown,
+  // контроль зажатой мышки на игровом поле
   active: false,
 };
 

@@ -6,7 +6,7 @@ import { CellSprite, CellStatus, Cell as ICell } from "src/types";
  * @returns массив содержащий значение каждой клетки
  */
 export function endGame(array: ICell[]) {
-  array.forEach(cell => {
+  array.forEach((cell) => {
     if (cell.isBomb) {
       if (cell.status === CellStatus.Open) {
         cell.sprite = CellSprite.ExplodedBomb;

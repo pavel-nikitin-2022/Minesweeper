@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint --ext ts,tsx,d.ts ./src"
+    "lint": "npm run lint/eslint && npm run lint/prettier",
+    "lint/eslint": "eslint .",
+    "lint/prettier": "prettier . -c",
+    "lint/prettierFix": "prettier . -w"
   },
   "dependencies": {
     "@emotion/css": "^11.10.6",
@@ -27,11 +30,11 @@
     "@typescript-eslint/parser": "^5.53.0",
     "@vitejs/plugin-react": "^3.1.0",
     "eslint": "^8.35.0",
-    "eslint-config-standard-with-typescript": "^34.0.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-n": "^15.6.1",
-    "eslint-plugin-promise": "^6.1.1",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^2.8.4",
     "typescript": "^4.9.5",
     "vite": "^4.1.0"
   }

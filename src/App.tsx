@@ -1,6 +1,6 @@
 import React from "react";
 import Game from "./components/Game";
-import { MouseController } from "./controllers/MouseController";
+import { mouseController } from "./controllers/MouseController";
 import styled from "@emotion/styled";
 import Info from "./components/Info";
 import { isRightClick } from "./utils";
@@ -17,16 +17,15 @@ const Wrapper = styled.div`
   background-color: #c2c2c2;
 `;
 
-function App() {
-
+const App: React.FC = () => {
   const onMouseDown = (e: MouseEvent) => {
     e.preventDefault();
-    !isRightClick(e) && MouseController.mouseDown();
+    !isRightClick(e) && mouseController.mouseDown();
   };
 
   const onMouseUp = (e: MouseEvent) => {
     e.preventDefault();
-    !isRightClick(e) && MouseController.mouseUp();
+    !isRightClick(e) && mouseController.mouseUp();
   };
 
   React.useEffect(() => {
@@ -47,6 +46,6 @@ function App() {
       <Game />
     </Wrapper>
   );
-}
+};
 
 export default App;

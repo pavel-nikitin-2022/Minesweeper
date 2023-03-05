@@ -12,7 +12,7 @@ const InfoSection = styled.div`
   align-items: center;
   height: 35px;
   padding-left: 6px;
-  padding-right: 6px; 
+  padding-right: 6px;
 
   border-width: 2px;
   border-style: solid;
@@ -25,7 +25,9 @@ const InfoSection = styled.div`
 
 const Info: React.FC = () => {
   const [timerValue, setTimerValue] = React.useState(0);
-  const { isStart, flagsAmount, gameStatus } = useAppSelector(state => state.cells);
+  const { isStart, flagsAmount, gameStatus } = useAppSelector(
+    (state) => state.cells
+  );
   const startTime = React.useRef(Date.now());
   const intervalId = React.useRef(false);
 
@@ -39,11 +41,9 @@ const Info: React.FC = () => {
         if (!intervalId.current) return;
         const currentTime = Date.now();
         const dif = (currentTime - startTime.current) / 1000;
-        if (Math.floor(dif) < 1000) 
-          setTimerValue(Math.floor(dif));
+        if (Math.floor(dif) < 1000) setTimerValue(Math.floor(dif));
         else setTimerValue(999);
-        if (intervalId.current)
-          requestAnimationFrame(timerUpdate);
+        if (intervalId.current) requestAnimationFrame(timerUpdate);
       });
     } else {
       intervalId.current = false;
@@ -60,7 +60,7 @@ const Info: React.FC = () => {
 
   return (
     <InfoSection>
-      <Counter number={flagsAmount}/>
+      <Counter number={flagsAmount} />
       <Smile gameStatus={gameStatus} />
       <Counter number={timerValue} />
     </InfoSection>

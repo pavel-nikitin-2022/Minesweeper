@@ -4,8 +4,8 @@ import { useAppSelector } from "src/store";
 import { GameStatus } from "src/types";
 import Cell from "./Cell";
 
-const GameBoard = styled.div<{isBlock: boolean}>`
-  ${({isBlock}) => isBlock && "pointer-events: none;"}
+const GameBoard = styled.div<{ isBlock: boolean }>`
+  ${({ isBlock }) => isBlock && "pointer-events: none;"}
   display: grid;
   grid-template-columns: repeat(16, 16px);
 
@@ -18,12 +18,12 @@ const GameBoard = styled.div<{isBlock: boolean}>`
 `;
 
 const Game: React.FC = () => {
-  const { cells, gameStatus } = useAppSelector(root => root.cells);
+  const { cells, gameStatus } = useAppSelector((root) => root.cells);
 
   return (
-    <GameBoard 
-      isBlock={gameStatus !== GameStatus.Unknown} 
-      onContextMenuCapture={e => e.preventDefault()}
+    <GameBoard
+      isBlock={gameStatus !== GameStatus.Unknown}
+      onContextMenuCapture={(e) => e.preventDefault()}
     >
       {cells.map((cell, i) => (
         <Cell {...cell} index={i} key={i} />

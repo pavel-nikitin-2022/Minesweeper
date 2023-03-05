@@ -1,4 +1,3 @@
-
 import { toCellSprite } from "src/store/game.reducer";
 import { CellSprite, CellStatus, Cell as ICell } from "src/types";
 import { findNeighbors } from "./findNeighbors";
@@ -7,7 +6,7 @@ import { findNeighbors } from "./findNeighbors";
  * Открывает области пустых клеток
  * @param index - индекс
  * @param array - матрица
- * @returns 
+ * @returns
  */
 export function openEmpty(index: number, array: ICell[]) {
   if (index < 0 || index > 255 || array[index].status !== CellStatus.Close)

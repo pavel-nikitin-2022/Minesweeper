@@ -1,17 +1,17 @@
 import styled from "@emotion/styled";
 import React from "react";
 import sprite from "src/assets/sprite.png";
-import { MouseController } from "src/controllers/MouseController";
+import { mouseController } from "src/controllers/MouseController";
 import {
   openCell,
   putFlag,
   highlightNeighbors,
   setSelected,
   openCellFlag,
-  setActive
+  setActive,
 } from "src/store/game.reducer";
 import { useAppDispatch } from "src/store";
-import { SpritesPos } from "./config";
+import { SPRITES_POS } from "./config";
 import { CellSprite, CellStatus, Cell as ICell } from "src/types";
 import { isRightClick } from "src/utils";
 
@@ -25,7 +25,7 @@ const CellSection = styled.div<{ state: CellSprite }>`
   background-image: url(${sprite});
   cursor: pointer;
   ${({ state }) =>
-    `background-position: ${SpritesPos[state].x}px ${SpritesPos[state].y}px`}
+    `background-position: ${SPRITES_POS[state].x}px ${SPRITES_POS[state].y}px`}
 `;
 
 const Cell: React.FC<ICell> = ({ status, sprite, index }) => {
@@ -33,32 +33,36 @@ const Cell: React.FC<ICell> = ({ status, sprite, index }) => {
   const touchStartRef = React.useRef<null | number>(null);
   const setCellSpriteTimeoutRef = React.useRef<number>(0);
 
-  const handleMouseDown = React.useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (isRightClick(e)) dispatch(putFlag(index));
-    else if (status === CellStatus.Open) {
-      dispatch(highlightNeighbors({ index, status: true }));
-      dispatch(setActive(true));
-    } else if (status === CellStatus.Close) {
-      dispatch(setSelected({ index, status: true }));
-      dispatch(setActive(true));
-    }
-      
-  }, [status]);
-
-  const handleMouseUp = React.useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (isRightClick(e)) return;
-    if (status !== CellStatus.Guess) {
-      if (status === CellStatus.Open) {
-        dispatch(highlightNeighbors({ index, status: false }));
-        dispatch(openCellFlag(index));
+  const handleMouseDown = React.useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      if (isRightClick(e)) dispatch(putFlag(index));
+      else if (status === CellStatus.Open) {
+        dispatch(highlightNeighbors({ index, status: true }));
+        dispatch(setActive(true));
+      } else if (status === CellStatus.Close) {
+        dispatch(setSelected({ index, status: true }));
+        dispatch(setActive(true));
       }
-      else dispatch(openCell(index));
-      dispatch(setActive(false));
-    }
-  }, [status]);
+    },
+    [status]
+  );
+
+  const handleMouseUp = React.useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      if (isRightClick(e)) return;
+      if (status !== CellStatus.Guess) {
+        if (status === CellStatus.Open) {
+          dispatch(highlightNeighbors({ index, status: false }));
+          dispatch(openCellFlag(index));
+        } else dispatch(openCell(index));
+        dispatch(setActive(false));
+      }
+    },
+    [status]
+  );
 
   const handleMouseLeave = React.useCallback(() => {
-    if (MouseController.isDown()) {
+    if (mouseController.isDown()) {
       if (status === CellStatus.Close)
         dispatch(setSelected({ index, status: false }));
       else dispatch(highlightNeighbors({ index, status: false }));
@@ -67,12 +71,11 @@ const Cell: React.FC<ICell> = ({ status, sprite, index }) => {
   }, [status]);
 
   const handleMouseEnter = React.useCallback(() => {
-    if (MouseController.isDown()) {
+    if (mouseController.isDown()) {
       if (status === CellStatus.Close) {
         dispatch(setSelected({ index, status: true }));
         dispatch(setActive(true));
-      }
-      else if (status === CellStatus.Open) {
+      } else if (status === CellStatus.Open) {
         dispatch(highlightNeighbors({ index, status: true }));
         dispatch(setActive(true));
       }

@@ -17,5 +17,5 @@ export {
   changeCell,
   openEmpty,
   openEmptyFlags,
-  findNeighbors
+  findNeighbors,
 };

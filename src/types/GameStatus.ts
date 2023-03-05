@@ -1,5 +1,5 @@
 export enum GameStatus {
-    Win = "Win",
-    Defeat = "Defeat",
-    Unknown = "Unknown",
+  Win = "Win",
+  Defeat = "Defeat",
+  Unknown = "Unknown",
 }

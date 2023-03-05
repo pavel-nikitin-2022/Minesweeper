@@ -3,7 +3,7 @@ import React from "react";
 import sprite from "src/assets/sprite.png";
 import { CounterSprite } from "src/types";
 
-const SpritesPos = {
+const SPRITES_POS = {
   1: { x: 0, y: 0 },
   2: { x: -14, y: 0 },
   3: { x: -28, y: 0 },
@@ -23,7 +23,7 @@ const TimeBlock = styled.div<{ number: CounterSprite }>`
   background-image: url(${sprite});
   display: inline-block;
   ${({ number }) =>
-    `background-position: ${SpritesPos[number].x}px ${SpritesPos[number].y}px`}
+    `background-position: ${SPRITES_POS[number].x}px ${SPRITES_POS[number].y}px`}
 `;
 
 const CounterSection = styled.div`
@@ -32,11 +32,11 @@ const CounterSection = styled.div`
   align-items: center;
 `;
 
-const Counter: React.FC<{number: number}> = ({number}) => {
+const Counter: React.FC<{ number: number }> = ({ number }) => {
   return (
     <CounterSection>
-      <TimeBlock number={((number - number % 100) / 100)}/>
-      <TimeBlock number={((number - number % 10) / 10) % 10 } />
+      <TimeBlock number={(number - (number % 100)) / 100} />
+      <TimeBlock number={((number - (number % 10)) / 10) % 10} />
       <TimeBlock number={number % 10} />
     </CounterSection>
   );

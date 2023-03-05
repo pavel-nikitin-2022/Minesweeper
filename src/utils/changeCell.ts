@@ -12,8 +12,7 @@ export function changeCell(index: number, array: ICell[]) {
   cell.isBomb = false;
 
   findNeighbors(index, array).forEach((neihgbour) => {
-    if (array[neihgbour].isBomb)
-      array[index].nearBombs++;
+    if (array[neihgbour].isBomb) array[index].nearBombs++;
     else array[neihgbour].nearBombs--;
   });
 
