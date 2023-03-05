@@ -53,6 +53,7 @@ const Smile: React.FC<{ gameStatus: GameStatus }> = ({ gameStatus }) => {
       smile={state}
       onMouseDown={() => setState(SmileSprite.DefaultPress)}
       onMouseUp={() => setState(SmileSprite.Default)}
+      onMouseLeave={() => setState(SmileSprite.Default)}
       onClick={() => dispatch(recreateGame())}
     />
   );
