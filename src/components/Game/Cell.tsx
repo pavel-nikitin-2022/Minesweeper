@@ -7,7 +7,8 @@ import {
   putFlag,
   highlightNeighbors,
   setSelected,
-  openCellFlag
+  openCellFlag,
+  setActive
 } from "../../store/game.reducer";
 import { useAppDispatch } from "../../store";
 import { isRightClick } from "../../utils/isRightClick";
@@ -38,8 +39,12 @@ const Cell: React.FC<ICell> = ({ status, sprite, index }) => {
     if (isRightClick(e)) dispatch(putFlag(index));
     else if (status === CellStatus.Open) {
       dispatch(highlightNeighbors({ index, status: true }));
-    } else if (status === CellStatus.Close)
+      dispatch(setActive(true));
+    } else if (status === CellStatus.Close) {
       dispatch(setSelected({ index, status: true }));
+      dispatch(setActive(true));
+    }
+      
   }, [status]);
 
   const handleMouseUp = React.useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -50,6 +55,7 @@ const Cell: React.FC<ICell> = ({ status, sprite, index }) => {
         dispatch(openCellFlag(index));
       }
       else dispatch(openCell(index));
+      dispatch(setActive(false));
     }
   }, [status]);
 
@@ -58,15 +64,19 @@ const Cell: React.FC<ICell> = ({ status, sprite, index }) => {
       if (status === CellStatus.Close)
         dispatch(setSelected({ index, status: false }));
       else dispatch(highlightNeighbors({ index, status: false }));
+      dispatch(setActive(false));
     }
   }, [status]);
 
   const handleMouseEnter = React.useCallback(() => {
     if (MouseController.isDown()) {
-      if (status === CellStatus.Close)
+      if (status === CellStatus.Close) {
         dispatch(setSelected({ index, status: true }));
+        dispatch(setActive(true));
+      }
       else if (status === CellStatus.Open) {
         dispatch(highlightNeighbors({ index, status: true }));
+        dispatch(setActive(true));
       }
     }
   }, [status]);

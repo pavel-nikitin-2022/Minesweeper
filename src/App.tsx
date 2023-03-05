@@ -8,8 +8,14 @@ import Info from "./components/Info";
 const Wrapper = styled.div`
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  padding: 6px;
+  border-width: 2px;
+  border-style: solid;
+  border-left-color: #fff;
+  border-top-color: #fff;
+  border-right-color: #9b9b9b;
+  border-bottom-color: #9b9b9b;
+  background-color: #c2c2c2;
 `;
 
 function App() {

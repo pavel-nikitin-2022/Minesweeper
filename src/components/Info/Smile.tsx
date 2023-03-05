@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import React from "react";
-import { useAppDispatch } from "src/store";
+import { useAppDispatch, useAppSelector } from "src/store";
 import sprite from "src/assets/sprite.png";
 import { GameStatus, recreateGame } from "src/store/game.reducer";
 
@@ -30,9 +30,10 @@ const SmileBlock = styled.div<{ smile: SmileOption }>`
     `background-position: ${SpritesPos[smile].x}px ${SpritesPos[smile].y}px`}
 `;
 
-const Smile: React.FC<{gameStatus: GameStatus}> = ({gameStatus}) => {
+const Smile: React.FC<{ gameStatus: GameStatus }> = ({ gameStatus }) => {
   const [state, setState] = React.useState<SmileOption>(SmileOption.Default);
   const dispatch = useAppDispatch();
+  const { active } = useAppSelector(state => state.cells);
 
   React.useEffect(() => {
     if (gameStatus === GameStatus.Defeat) {
@@ -41,6 +42,16 @@ const Smile: React.FC<{gameStatus: GameStatus}> = ({gameStatus}) => {
     if (gameStatus === GameStatus.Win)
       setState(SmileOption.PockerFace);
   }, [gameStatus]);
+
+  React.useEffect(() => {
+    if (gameStatus !== GameStatus.Unknown)
+      return;
+    if (active) {
+      setState(SmileOption.Suprised);
+    } else {
+      setState(SmileOption.Default);
+    }
+  }, [active]);
 
   return (
     <SmileBlock

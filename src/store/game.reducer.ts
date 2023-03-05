@@ -23,6 +23,7 @@ export type GameState = {
   isStart: boolean;
   bomb: number;
   gameStatus: GameStatus;
+  active: boolean;
 };
 
 const initialState: GameState = {
@@ -30,6 +31,7 @@ const initialState: GameState = {
   isStart: false,
   bomb: 40,
   gameStatus: GameStatus.Unknown,
+  active: false,
 };
 
 /**
@@ -126,7 +128,7 @@ const GameSlice = createSlice({
       const i = action.payload;
       // проверяем что индекс существует и клетка открыта
       if (i < 0 || i > 255 || state.cells[i].status !== CellStatus.Open) return;
-      const answer = openEmptyFlags(i, state.cells, true);
+      const answer = openEmptyFlags(i, state.cells);
       if (answer) {
         state.cells[answer.index].status = CellStatus.Open;
         state.gameStatus = GameStatus.Defeat;
@@ -191,6 +193,10 @@ const GameSlice = createSlice({
       state.isStart = false;
       state.gameStatus = GameStatus.Unknown;
     },
+
+    setActive(state: GameState, action: PayloadAction<boolean>) {
+      state.active = action.payload;
+    }
   },
 });
 
@@ -201,5 +207,6 @@ export const {
   setSelected,
   putFlag,
   recreateGame,
-  openCellFlag
+  openCellFlag,
+  setActive
 } = GameSlice.actions;

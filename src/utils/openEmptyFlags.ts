@@ -1,45 +1,37 @@
 import { toCellSprite } from "../store/game.reducer";
 import { CellSprite, CellStatus, Cell as ICell } from "../types";
-import { endGame } from "./endGame";
 import { findNeighbors } from "./findNeighbors";
+import { openEmpty } from "./openEmpty";
 
-export function openEmptyFlags(index: number, array: ICell[], first = false) {
-  if (
-    index < 0 ||
-    index > 255 ||
-    (array[index].status !== CellStatus.Close && !first)
-  )
+export function openEmptyFlags(index: number, array: ICell[]) {
+  if (index < 0 || index > 255 || array[index].status === CellStatus.Close)
     return;
-  const cell = array[index];
+
   let flagNumbers = 0;
 
   findNeighbors(index, array).forEach((neihgbour) => {
-    if (array[neihgbour].sprite === CellSprite.Flag) flagNumbers++;
+    if (array[neihgbour].sprite === CellSprite.Flag)
+      flagNumbers++;
   });
 
-  if (cell.isBomb) {
-    return {index: cell.index};
-  }
+  if (array[index].nearBombs === flagNumbers) {
+    for (const neihgbour of findNeighbors(index, array)) {
+      if (array[neihgbour].status === CellStatus.Close) {
 
-  if (cell.nearBombs - flagNumbers > 0) {
-    cell.status = CellStatus.Open;
-    const newState = toCellSprite(cell.nearBombs);
-    if (newState) cell.sprite = newState;
-    return;
-  }
+        if (array[neihgbour].isBomb) {
+          return { index: array[neihgbour].index };
+        } 
 
-  if (cell.nearBombs - flagNumbers === 0) {
-    cell.status = CellStatus.Open;
-    const newState = toCellSprite(cell.nearBombs);
-    if (newState) cell.sprite = newState;
-
-    let answer: {index: number} | null = null;
-
-    findNeighbors(index, array).forEach((neihgbour) => {
-      const t = openEmptyFlags(neihgbour, array);
-      if (t) answer = t;
-    });
-
-    return answer;
+        else if (array[neihgbour].nearBombs === 0) {
+          openEmpty(neihgbour, array);
+        } 
+        
+        else {
+          array[neihgbour].status = CellStatus.Open;
+          const newState = toCellSprite(array[neihgbour].nearBombs);
+          if (newState) array[neihgbour].sprite = newState;
+        }
+      }
+    }
   }
 }

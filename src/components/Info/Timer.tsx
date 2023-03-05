@@ -39,6 +39,9 @@ const TimeBlock = styled.div<{ number: TimerNumber }>`
 `;
 
 const TimeSection = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Timer: React.FC<{number: number}> = ({number}) => {

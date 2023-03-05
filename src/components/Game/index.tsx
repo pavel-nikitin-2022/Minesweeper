@@ -7,9 +7,14 @@ import Cell from "./Cell";
 const GameBoard = styled.div<{isBlock: boolean}>`
   ${({isBlock}) => isBlock && "pointer-events: none;"}
   display: grid;
-  background-color: #999;
-  padding: 5px;
   grid-template-columns: repeat(16, 16px);
+
+  border-width: 2px;
+  border-style: solid;
+  border-left-color: #7b7b7b;
+  border-top-color: #7b7b7b;
+  border-right-color: #fff;
+  border-bottom-color: #fff;
 `;
 
 const Game: React.FC = () => {
