@@ -1,27 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { openEmpty } from "src/utils/openEmpty";
-import { endGame } from "src/utils/endGame";
-import { findNeighbors } from "src/utils/findNeighbors";
-import { generateCells } from "src/utils/generateBoard";
-import { changeCell } from "src/utils/changeCell";
-import { Cell as ICell, CellSprite, CellStatus } from "../types";
-import { openEmptyFlags } from "src/utils/openEmptyFlags";
-import { isVictory } from "src/utils/isFinish";
-import { help } from "src/utils/helper";
-// todo все с большой буквы (комменты)
-// todo перенести в ...
+import { Cell as ICell, CellSprite, CellStatus, GameStatus } from "src/types";
+import {
+  changeCell,
+  endGame,
+  findNeighbors,
+  generateCells,
+  isVictory,
+  openEmpty,
+  openEmptyFlags,
+} from "src/utils";
 
-export enum GameStatus {
-  Win = "Win",
-  Defeat = "Defeat",
-  Unknown = "Unknown",
-}
-
-// todo bommb -> flagsAmount
 export type GameState = {
   cells: ICell[];
   isStart: boolean;
-  bomb: number;
+  flagsAmount: number;
   gameStatus: GameStatus;
   active: boolean;
 };
@@ -29,7 +21,7 @@ export type GameState = {
 const initialState: GameState = {
   cells: generateCells(),
   isStart: false,
-  bomb: 40,
+  flagsAmount: 40,
   gameStatus: GameStatus.Unknown,
   active: false,
 };
@@ -73,7 +65,7 @@ const GameSlice = createSlice({
       action: PayloadAction<{ index: number; status: boolean }>
     ) {
       const { index, status } = action.payload;
-      // проверяем пришел ли адекватный индекс и открыт ли он
+      // Проверяем существует ли индекс и статус клетки
       if (
         index < 0 ||
         index > 255 ||
@@ -98,9 +90,6 @@ const GameSlice = createSlice({
 
       const cell = state.cells[i];
       if (!state.isStart && cell.isBomb) changeCell(i, state.cells);
-      // if (!state.isStart){
-      //   help(state.cells);
-      // }
       state.isStart = true;
 
       if (cell.isBomb) {
@@ -117,7 +106,7 @@ const GameSlice = createSlice({
         openEmpty(i, state.cells);
       }
 
-      if (isVictory(state.cells)){
+      if (isVictory(state.cells)) {
         endGame(state.cells);
         state.gameStatus = GameStatus.Win;
       }
@@ -134,7 +123,7 @@ const GameSlice = createSlice({
         state.gameStatus = GameStatus.Defeat;
         endGame(state.cells);
       }
-      if (isVictory(state.cells)){
+      if (isVictory(state.cells)) {
         endGame(state.cells);
         state.gameStatus = GameStatus.Win;
       }
@@ -170,17 +159,17 @@ const GameSlice = createSlice({
 
       if (cell.sprite === CellSprite.Flag) {
         cell.sprite = CellSprite.QuestionMark;
-        state.bomb++;
+        state.flagsAmount++;
       } else if (cell.sprite === CellSprite.QuestionMark)
         cell.sprite = CellSprite.Close;
       else {
-        if (state.bomb) {
+        if (state.flagsAmount) {
           cell.sprite = CellSprite.Flag;
-          state.bomb--;
+          state.flagsAmount--;
         }
       }
 
-      if (isVictory(state.cells)){
+      if (isVictory(state.cells)) {
         endGame(state.cells);
         state.gameStatus = GameStatus.Win;
       }
@@ -189,14 +178,15 @@ const GameSlice = createSlice({
     /** Пересоздание игры */
     recreateGame(state: GameState) {
       state.cells = generateCells();
-      state.bomb = 40;
+      state.flagsAmount = 40;
       state.isStart = false;
       state.gameStatus = GameStatus.Unknown;
     },
 
+    /** Передаем информацию о зажатости кнопок */
     setActive(state: GameState, action: PayloadAction<boolean>) {
       state.active = action.payload;
-    }
+    },
   },
 });
 
@@ -208,5 +198,5 @@ export const {
   putFlag,
   recreateGame,
   openCellFlag,
-  setActive
+  setActive,
 } = GameSlice.actions;

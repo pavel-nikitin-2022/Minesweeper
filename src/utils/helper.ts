@@ -1,8 +1,7 @@
-import { CellSprite, CellStatus, Cell as ICell } from "../types";
+import { CellSprite, CellStatus, Cell as ICell } from "src/types";
 
 /**
- * Скрипт окончания игры
- * @returns массив содержащий значение каждой клетки
+ * Помощник ставит при первом клике флажки в места где стоят бомбы
  */
 export function help(array: ICell[]) {
   array.forEach((cell) => {

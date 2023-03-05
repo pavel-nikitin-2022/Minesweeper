@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
 import React from "react";
-import { GameStatus } from "src/store/game.reducer";
 import { useAppSelector } from "src/store";
+import { GameStatus } from "src/types";
 import Smile from "./Smile";
-import Timer from "./Timer";
+import Counter from "./Counter";
 
 const InfoSection = styled.div`
   display: flex;
@@ -25,19 +25,23 @@ const InfoSection = styled.div`
 
 const Info: React.FC = () => {
   const [timerValue, setTimerValue] = React.useState(0);
-  const { isStart, bomb, gameStatus } = useAppSelector(state => state.cells);
+  const { isStart, flagsAmount, gameStatus } = useAppSelector(state => state.cells);
   const startTime = React.useRef(Date.now());
   const intervalId = React.useRef(false);
 
-  // первое нажатие
+  // Запускаем таймер после первого открытия клетки
+  // Останваливаем и сбрасываем при перезапуске
   React.useEffect(() => {
     if (isStart) {
       intervalId.current = true;
       startTime.current = Date.now();
       requestAnimationFrame(function timerUpdate() {
+        if (!intervalId.current) return;
         const currentTime = Date.now();
         const dif = (currentTime - startTime.current) / 1000;
-        setTimerValue(Math.floor(dif));
+        if (Math.floor(dif) < 1000) 
+          setTimerValue(Math.floor(dif));
+        else setTimerValue(999);
         if (intervalId.current)
           requestAnimationFrame(timerUpdate);
       });
@@ -47,7 +51,7 @@ const Info: React.FC = () => {
     }
   }, [isStart]);
 
-  // конец игры
+  // Останавливаем, но не сбрасываем таймер в конце игры.
   React.useEffect(() => {
     if (gameStatus !== GameStatus.Unknown) {
       intervalId.current = false;
@@ -56,9 +60,9 @@ const Info: React.FC = () => {
 
   return (
     <InfoSection>
-      <Timer number={bomb}/>
+      <Counter number={flagsAmount}/>
       <Smile gameStatus={gameStatus} />
-      <Timer number={timerValue} />
+      <Counter number={timerValue} />
     </InfoSection>
   );
 };

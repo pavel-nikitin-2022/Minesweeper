@@ -1,4 +1,4 @@
-import { Cell as ICell, CellSprite, CellStatus } from "../types";
+import { Cell as ICell, CellSprite, CellStatus } from "src/types";
 import { findNeighbors } from "./findNeighbors";
 
 /**

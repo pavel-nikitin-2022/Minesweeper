@@ -1,19 +1,7 @@
 import styled from "@emotion/styled";
 import React from "react";
 import sprite from "src/assets/sprite.png";
-
-enum TimerNumber {
-  One = 1,
-  Two = 2,
-  Three = 3,
-  Four= 4,
-  Five = 5,
-  Six = 6,
-  Seven = 7,
-  Eight = 8,
-  Nine = 9,
-  Zero = 0,
-}
+import { CounterSprite } from "src/types";
 
 const SpritesPos = {
   1: { x: 0, y: 0 },
@@ -28,7 +16,7 @@ const SpritesPos = {
   0: { x: -126, y: 0 },
 };
 
-const TimeBlock = styled.div<{ number: TimerNumber }>`
+const TimeBlock = styled.div<{ number: CounterSprite }>`
   width: 13px;
   height: 23px;
   image-rendering: pixelated;
@@ -38,20 +26,20 @@ const TimeBlock = styled.div<{ number: TimerNumber }>`
     `background-position: ${SpritesPos[number].x}px ${SpritesPos[number].y}px`}
 `;
 
-const TimeSection = styled.div`
+const CounterSection = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
-const Timer: React.FC<{number: number}> = ({number}) => {
+const Counter: React.FC<{number: number}> = ({number}) => {
   return (
-    <TimeSection>
+    <CounterSection>
       <TimeBlock number={((number - number % 100) / 100)}/>
       <TimeBlock number={((number - number % 10) / 10) % 10 } />
       <TimeBlock number={number % 10} />
-    </TimeSection>
+    </CounterSection>
   );
 };
 
-export default React.memo(Timer);
+export default React.memo(Counter);

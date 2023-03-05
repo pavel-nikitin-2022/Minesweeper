@@ -1,10 +1,10 @@
-import { Cell as ICell } from "../types";
+import { Cell as ICell } from "src/types";
 import { findNeighbors } from "./findNeighbors";
 
 /**
  * Функция для замены бомбы на безопасную клетку
  * @param index - порядковый номер клетки в матрице
- * @param array - матрицаи
+ * @param array - матрица
  */
 export function changeCell(index: number, array: ICell[]) {
   if (index < 0 || index > 255 || !array[index].isBomb) return;

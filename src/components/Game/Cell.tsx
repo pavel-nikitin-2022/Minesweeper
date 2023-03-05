@@ -9,11 +9,11 @@ import {
   setSelected,
   openCellFlag,
   setActive
-} from "../../store/game.reducer";
-import { useAppDispatch } from "../../store";
-import { isRightClick } from "../../utils/isRightClick";
+} from "src/store/game.reducer";
+import { useAppDispatch } from "src/store";
 import { SpritesPos } from "./config";
-import { CellSprite, CellStatus, Cell as ICell } from "../../types";
+import { CellSprite, CellStatus, Cell as ICell } from "src/types";
+import { isRightClick } from "src/utils";
 
 const TOUCH_INTERVAL = 600;
 
@@ -32,8 +32,6 @@ const Cell: React.FC<ICell> = ({ status, sprite, index }) => {
   const dispatch = useAppDispatch();
   const touchStartRef = React.useRef<null | number>(null);
   const setCellSpriteTimeoutRef = React.useRef<number>(0);
-
-  // обработчики событий клетки
 
   const handleMouseDown = React.useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (isRightClick(e)) dispatch(putFlag(index));
@@ -97,6 +95,7 @@ const Cell: React.FC<ICell> = ({ status, sprite, index }) => {
       onMouseUp={handleMouseUp}
       onTouchStart={handleTouchStart}
       onTouchEnd={() => clearTimeout(setCellSpriteTimeoutRef.current)}
+      onTouchMove={() => clearTimeout(setCellSpriteTimeoutRef.current)}
     />
   );
 };

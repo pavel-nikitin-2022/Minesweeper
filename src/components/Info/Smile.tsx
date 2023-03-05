@@ -2,15 +2,8 @@ import styled from "@emotion/styled";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "src/store";
 import sprite from "src/assets/sprite.png";
-import { GameStatus, recreateGame } from "src/store/game.reducer";
-
-enum SmileOption {
-  Default = "default",
-  DefaultPress = "defaultPress",
-  Suprised = "suprised",
-  PockerFace = "pockerFace",
-  SadFace = "sadFace",
-}
+import { recreateGame } from "src/store/game.reducer";
+import { GameStatus, SmileSprite } from "src/types";
 
 const SpritesPos = {
   default: { x: 0, y: -24 },
@@ -20,7 +13,7 @@ const SpritesPos = {
   sadFace: { x: -108, y: -24 },
 };
 
-const SmileBlock = styled.div<{ smile: SmileOption }>`
+const SmileBlock = styled.div<{ smile: SmileSprite }>`
   width: 26px;
   height: 26px;
   image-rendering: pixelated;
@@ -31,33 +24,35 @@ const SmileBlock = styled.div<{ smile: SmileOption }>`
 `;
 
 const Smile: React.FC<{ gameStatus: GameStatus }> = ({ gameStatus }) => {
-  const [state, setState] = React.useState<SmileOption>(SmileOption.Default);
+  const [state, setState] = React.useState(SmileSprite.Default);
   const dispatch = useAppDispatch();
   const { active } = useAppSelector(state => state.cells);
 
+  // Окончание игры -> ставится эмодзи победы или поражения
   React.useEffect(() => {
     if (gameStatus === GameStatus.Defeat) {
-      setState(SmileOption.SadFace);
+      setState(SmileSprite.SadFace);
     }
     if (gameStatus === GameStatus.Win)
-      setState(SmileOption.PockerFace);
+      setState(SmileSprite.PockerFace);
   }, [gameStatus]);
 
+  // При выборе клетки ставится удивленный эмодзи
   React.useEffect(() => {
     if (gameStatus !== GameStatus.Unknown)
       return;
     if (active) {
-      setState(SmileOption.Suprised);
+      setState(SmileSprite.Suprised);
     } else {
-      setState(SmileOption.Default);
+      setState(SmileSprite.Default);
     }
   }, [active]);
 
   return (
     <SmileBlock
       smile={state}
-      onMouseDown={() => setState(SmileOption.DefaultPress)}
-      onMouseUp={() => setState(SmileOption.Default)}
+      onMouseDown={() => setState(SmileSprite.DefaultPress)}
+      onMouseUp={() => setState(SmileSprite.Default)}
       onClick={() => dispatch(recreateGame())}
     />
   );

@@ -2,11 +2,10 @@ import React from "react";
 import Game from "./components/Game";
 import { MouseController } from "./controllers/MouseController";
 import styled from "@emotion/styled";
-import { isRightClick } from "./utils/isRightClick";
 import Info from "./components/Info";
+import { isRightClick } from "./utils";
 
 const Wrapper = styled.div`
-  max-width: 1280px;
   margin: 0 auto;
   padding: 6px;
   border-width: 2px;

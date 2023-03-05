@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import React from "react";
-import { GameStatus } from "../../store/game.reducer";
-import { useAppSelector } from "../../store";
+import { useAppSelector } from "src/store";
+import { GameStatus } from "src/types";
 import Cell from "./Cell";
 
 const GameBoard = styled.div<{isBlock: boolean}>`

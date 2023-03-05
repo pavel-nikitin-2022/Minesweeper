@@ -1,8 +1,13 @@
-import { toCellSprite } from "../store/game.reducer";
-import { CellSprite, CellStatus, Cell as ICell } from "../types";
+import { toCellSprite } from "src/store/game.reducer";
+import { CellSprite, CellStatus, Cell as ICell } from "src/types";
 import { findNeighbors } from "./findNeighbors";
 import { openEmpty } from "./openEmpty";
 
+/**
+ * Открывает соседей открытой клетки, если количество флагов рядом равно количеству бомб рядом
+ * @param index индекс элемента массива
+ * @param array - матрица
+ */
 export function openEmptyFlags(index: number, array: ICell[]) {
   if (index < 0 || index > 255 || array[index].status === CellStatus.Close)
     return;

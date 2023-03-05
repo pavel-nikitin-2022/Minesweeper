@@ -1,4 +1,4 @@
-import { Cell as ICell } from "../types";
+import { Cell as ICell } from "src/types";
 
 
 /**

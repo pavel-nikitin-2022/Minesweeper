@@ -1,7 +1,8 @@
-import { CellSprite, CellStatus, Cell as ICell } from "../types";
+import { CellSprite, CellStatus, Cell as ICell } from "src/types";
 
 /**
  * Скрипт окончания игры
+ * @param array - матрица
  * @returns массив содержащий значение каждой клетки
  */
 export function endGame(array: ICell[]) {
