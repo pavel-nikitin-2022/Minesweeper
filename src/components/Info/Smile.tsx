@@ -4,6 +4,8 @@ import { useAppDispatch, useAppSelector } from "src/store";
 import sprite from "src/assets/sprite.png";
 import { recreateGame } from "src/store/game.reducer";
 import { GameStatus, SmileSprite } from "src/types";
+import { MouseController } from "src/controllers/MouseController";
+import { isRightClick } from "src/utils";
 
 const SpritesPos = {
   default: { x: 0, y: -24 },
@@ -51,9 +53,14 @@ const Smile: React.FC<{ gameStatus: GameStatus }> = ({ gameStatus }) => {
   return (
     <SmileBlock
       smile={state}
-      onMouseDown={() => setState(SmileSprite.DefaultPress)}
-      onMouseUp={() => setState(SmileSprite.Default)}
-      onMouseLeave={() => setState(SmileSprite.Default)}
+      onMouseDown={(e) => !isRightClick(e) && setState(SmileSprite.DefaultPress)}
+      onMouseUp={(e) => !isRightClick(e) && setState(SmileSprite.Default)}
+      onMouseLeave={(e) => {
+        if (MouseController.isDown() && !isRightClick(e)) {
+          setState(SmileSprite.Default);
+          dispatch(recreateGame());
+        }
+      }}
       onClick={() => dispatch(recreateGame())}
     />
   );
